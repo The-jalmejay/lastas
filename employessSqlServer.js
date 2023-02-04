@@ -55,7 +55,7 @@ app.get("/svr/employees", function (req, res) {
       }
       console.log("result.row", result.rows);
       res.send(result.rows);
-      client.end();
+      
     }
   });
 });
@@ -67,7 +67,7 @@ app.get("/svr/employees/:id", function (req, res) {
     if (err) res.status(404).send(err);
     else {
       res.send(result.rows);
-      client.end();
+      
     }
   });
 });
@@ -81,7 +81,7 @@ app.get("/svr/employees/designation/:designation", function (req, res) {
     if (err) res.status(404).send(err);
     else {
       res.send(result.rows);
-      client.end();
+      
     }
   });
 });
@@ -93,7 +93,7 @@ app.get("/svr/employees/department/:department", function (req, res) {
     if (err) res.status(404).send(err);
     else {
       res.send(result.rows);
-      client.end();
+      
     }
   });
 });
@@ -125,7 +125,7 @@ app.post("/svr/employees", function (req, res) {
           res.status(400).send(err);
         } else {
           res.send(`${result.rows} insertion successfull`);
-          client.end();
+          
         }
       });
     }
@@ -154,7 +154,7 @@ app.put("/svr/employees/:id", function (req, res) {
           if (err) res.status(400).send(err);
           else {
             res.send(update);
-            client.end();
+            
           }
         });
       } else {
