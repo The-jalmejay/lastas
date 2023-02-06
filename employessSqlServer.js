@@ -100,6 +100,7 @@ app.get("/svr/employees/department/:department", function (req, res) {
 app.post("/svr/employees", function (req, res) {
   console.log("Inside post of employees");
   let body = req.body;
+  console.log(body);
   const query = "SELECT * FROM employees";
   client.query(query, function (err, result) {
     if (err) res.status(404).send(err);
@@ -117,15 +118,15 @@ app.post("/svr/employees", function (req, res) {
         newEmployees = { empcode: maxid + 1, ...body };
       }
       console.log(newEmployees);
+      let arr=newEmployees.map(e=>[e.name,e.department,e.designation,e.salary,e.gender,e.empcode]);
       let values = Object.values(newEmployees);
       console.log("values", values);
       const query = `INSERT INTO employees (empcode,name,department,designation,salary,gender) VALUES ($1,$2,$3,$4,$5,$6)`;
-      client.query(query, values, function (err, result) {
+      client.query(query, arr[0], function (err, result) {
         if (err) {
           res.status(400).send(err);
         } else {
-          res.send(`${result.rows} insertion successfull`);
-          
+          res.send(`${newEmployees} insertion successfull`);
         }
       });
     }
@@ -136,6 +137,7 @@ app.put("/svr/employees/:id", function (req, res) {
   let id = +req.params.id;
   let body = req.body;
   console.log(id);
+  console.log("body".body);
   let query = "SELECT * FROM employees";
   client.query(query, function (err, result) {
     if (err) {
@@ -145,13 +147,15 @@ app.put("/svr/employees/:id", function (req, res) {
       let index = result.rows.findIndex((e) => e.empcode === id);
       console.log(index);
       if (index >= 0) {
-        let update = { ...body, empcode: id };
+        let update = [{ ...body, empcode: id }];
         let values = Object.values(update);
-        console.log(values);
+        let arr=update.map(e=>[e.name,e.department,e.designation,e.salary,e.gender,e.empcode]);
+        console.log("arr",arr);
         const query =
           "UPDATE employees SET name=$1,department=$2,designation=$3,salary=$4,gender=$5 WHERE empcode=$6 ";
-        client.query(query, values, function (err, result) {
-          if (err) res.status(400).send(err);
+        client.query(query, arr[0], function (err, result) {
+          if (err){ res.status(400).send(err);
+          console.log("error2")}
           else {
             res.send(update);
             
