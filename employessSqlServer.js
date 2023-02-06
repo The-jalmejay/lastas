@@ -53,7 +53,7 @@ app.get("/svr/employees", function (req, res) {
         console.log(genderStr);
         result.rows = result.rows.filter((e) => e.gender === genderStr);
       }
-      console.log("result.row", result.rows);
+      // console.log("result.row", result.rows);
       res.send(result.rows);
       
     }
@@ -100,27 +100,24 @@ app.get("/svr/employees/department/:department", function (req, res) {
 app.post("/svr/employees", function (req, res) {
   console.log("Inside post of employees");
   let body = req.body;
-  console.log(body);
+  // console.log(body);
   const query = "SELECT * FROM employees";
   client.query(query, function (err, result) {
     if (err) res.status(404).send(err);
     else {
-      console.log(result.rows);
+      // console.log(result.rows);
       let maxid = result.rows.reduce(
         (acc, curr) => (acc > curr.empcode ? acc : curr.empcode),
         0
       );
-      console.log(maxid);
-      let newEmployees = "";
-      if (body.empcode) {
-        newEmployees = { ...body };
-      } else {
-        newEmployees = { empcode: maxid + 1, ...body };
-      }
-      console.log(newEmployees);
-      let arr=newEmployees.map(e=>[e.name,e.department,e.designation,e.salary,e.gender,e.empcode]);
+      console.log(maxid)
+      let Employees = [{ ...body,empcode: maxid + 1 }];
+      let newEmployees = { ...body,empcode: maxid + 1 };
+      console.log("newEmp",newEmployees);
+      let arr=Employees.map(e=>[e.empcode,e.name,e.department,e.designation,e.salary,e.gender]);
       let values = Object.values(newEmployees);
       console.log("values", values);
+      console.log("arr",arr[0]);
       const query = `INSERT INTO employees (empcode,name,department,designation,salary,gender) VALUES ($1,$2,$3,$4,$5,$6)`;
       client.query(query, arr[0], function (err, result) {
         if (err) {
